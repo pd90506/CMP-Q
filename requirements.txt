@@ -1,0 +1,11 @@
+torch>=2.1
+transformers>=4.51.0
+tokenizers>=0.21.0
+datasets
+accelerate
+pyyaml
+numpy
+python-dotenv
+safetensors
+tqdm
+lm-eval>=0.4

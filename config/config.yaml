@@ -1,0 +1,37 @@
+# Default config. Every field can be overridden with
+#   python main.py --set section.key=value [section.key=value ...]
+experiment:
+  name: "auto"                  # auto: derived from the config (see CompressorConfig.auto_name)
+  output_dir: "./experiments"   # quantized model -> <output_dir>/<name>/models/compressed_model
+  seed: 42
+  method: "cmpq"                # main.py: cmpq | quip   (baselines/run.py: gptq | gptaq)
+
+model:
+  name: "Qwen/Qwen3-8B-Base"
+  hf_token: ${HF_TOKEN}         # resolved from the environment (or .env); only needed for gated models
+  device_map: "auto"
+  seq_len: 2048
+
+data:
+  dataset_name: "allenai/c4"
+  subset: "en"
+  n_samples: 128
+  batch_size: 1
+  num_workers: 4
+
+calibration:
+  add_bos: false                # true: first token of each calibration window -> BOS (only if the tokenizer adds BOS)
+
+quantization:
+  bits: 3
+  groupsize: 128
+  sym: true
+  act_order: true
+  rht: false                    # QuIP#-style random Hadamard rotation of W/H/V before the solver
+  percdamp: 0.01                # GPTQ's standard diagonal damping
+  mse_clip: true                # per-group MSE clip search
+
+# CMP-Q: H_hat = H + λ·(tr H / tr V)·V, V = ΔX·ΔXᵀ (cumulative). Ignored by baselines/run.py.
+cmpq:
+  lambda_val: 0.1
+  delta_stats: false            # write ΔX mean/rho statistics to diagnostics/

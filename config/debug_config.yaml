@@ -1,0 +1,31 @@
+# Tiny end-to-end smoke test (runs on a laptop CPU/MPS in a few minutes).
+#   python main.py --config config/debug_config.yaml
+experiment:
+  name: "auto"
+  output_dir: "./experiments/debug"
+  seed: 42
+  method: "cmpq"
+
+model:
+  name: "Qwen/Qwen3-0.6B"
+  hf_token: null
+  device_map: "auto"
+  seq_len: 128
+
+data:
+  dataset_name: "allenai/c4"
+  subset: "en"
+  n_samples: 16
+  batch_size: 1
+  num_workers: 0
+
+quantization:
+  bits: 4
+  groupsize: 32
+  sym: true
+  act_order: true
+  percdamp: 0.01
+  mse_clip: true
+
+cmpq:
+  lambda_val: 0.1
